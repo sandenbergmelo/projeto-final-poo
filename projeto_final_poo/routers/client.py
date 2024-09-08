@@ -46,7 +46,7 @@ def get_client_by_id(id: int, session: T_Session):
 
 
 @router.put('/{id}', response_model=ClientPublic)
-def update_client(id: int, client: ClientPublic, session: T_Session):
+def update_client(id: int, client: ClientSchema, session: T_Session):
     db_client = session.get(Client, id)
 
     if not db_client:
