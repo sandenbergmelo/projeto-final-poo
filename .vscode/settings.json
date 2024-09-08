@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
+        "DBAPI",
         "onupdate",
         "pipx",
+        "poolclass",
         "pydantic",
         "sqlalchemy"
     ]

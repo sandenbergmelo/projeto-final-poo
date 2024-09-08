@@ -25,6 +25,11 @@ dev = 'fastapi dev projeto_final_poo/app.py'
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
 
+migrate_upgrade = 'alembic upgrade head'
+migrate_generate = 'alembic revision --autogenerate -m'
+migrate = 'task migrate_generate'
+post_migrate = 'task migrate_upgrade'
+
 coverage = 'coverage html'
 pre_test = 'task lint'
 test = 'pytest --cov=projeto_final_poo -vv'
