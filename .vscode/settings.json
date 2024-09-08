@@ -5,6 +5,7 @@
         "pipx",
         "poolclass",
         "pydantic",
+        "pytest",
         "sqlalchemy"
     ]
 }
