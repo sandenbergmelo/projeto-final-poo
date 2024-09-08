@@ -1,3 +1,5 @@
+import random
+
 import factory
 import pytest
 from fastapi.testclient import TestClient
@@ -24,7 +26,7 @@ class ServiceFactory(factory.Factory):
     type = factory.Sequence(lambda n: f'service_type_{n}')
     description = factory.Faker('sentence', nb_words=4)
     price = factory.LazyAttribute(
-        lambda _: round(factory.random.uniform(10.00, 500.00), 2)
+        lambda _: round(random.uniform(10.00, 500.00), 2)
     )
 
 
@@ -89,6 +91,17 @@ def other_client(session: Session):
 
 @pytest.fixture
 def service(session: Session):
+    service = ServiceFactory()
+
+    session.add(service)
+    session.commit()
+    session.refresh(service)
+
+    return service
+
+
+@pytest.fixture
+def other_service(session: Session):
     service = ServiceFactory()
 
     session.add(service)
