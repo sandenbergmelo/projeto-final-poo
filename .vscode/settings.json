@@ -4,9 +4,12 @@
         "onupdate",
         "pipx",
         "poolclass",
+        "psycopg",
         "pydantic",
+        "pyenv",
         "pytest",
-        "sqlalchemy"
+        "sqlalchemy",
+        "taskipy"
     ],
     "python.testing.pytestArgs": [
         "tests"
