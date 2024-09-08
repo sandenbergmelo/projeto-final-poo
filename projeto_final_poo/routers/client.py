@@ -17,6 +17,16 @@ router = APIRouter(prefix='/clients', tags=['clients'])
     '/', status_code=status.HTTP_201_CREATED, response_model=ClientPublic
 )
 def create_client(client: ClientSchema, session: T_Session):
+    db_client = session.scalar(
+        select(Client).where(Client.phone_number == client.phone_number)
+    )
+
+    if db_client:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Phone number already exists in another client',
+        )
+
     db_client = Client(name=client.name, phone_number=client.phone_number)
 
     session.add(db_client)
@@ -39,7 +49,7 @@ def get_client_by_id(id: int, session: T_Session):
 
     if not client:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
         )
 
     return client
@@ -51,7 +61,7 @@ def update_client(id: int, client: ClientSchema, session: T_Session):
 
     if not db_client:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
         )
 
     db_client.name = client.name
@@ -69,10 +79,10 @@ def delete_client(id: int, session: T_Session):
 
     if not db_client:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
         )
 
     session.delete(db_client)
     session.commit()
 
-    return {'message': 'User deleted'}
+    return {'message': 'Client deleted'}

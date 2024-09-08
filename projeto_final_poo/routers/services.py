@@ -43,7 +43,7 @@ def get_service_by_id(id: int, session: T_Session):
 
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
         )
 
     return service
@@ -55,7 +55,7 @@ def update_service(id: int, service: ServiceSchema, session: T_Session):
 
     if not db_service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
         )
 
     db_service.type = service.type
@@ -74,10 +74,10 @@ def delete_service(id: int, session: T_Session):
 
     if not db_service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='User not found'
+            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
         )
 
     session.delete(db_service)
     session.commit()
 
-    return {'message': 'User deleted'}
+    return {'message': 'Service deleted'}
