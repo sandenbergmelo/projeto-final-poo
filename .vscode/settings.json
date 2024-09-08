@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
-        "pipx"
+        "onupdate",
+        "pipx",
+        "pydantic",
+        "sqlalchemy"
     ]
 }
