@@ -1,5 +1,19 @@
 {
     "cSpell.words": [
-        "pipx"
-    ]
+        "DBAPI",
+        "onupdate",
+        "pipx",
+        "poolclass",
+        "psycopg",
+        "pydantic",
+        "pyenv",
+        "pytest",
+        "sqlalchemy",
+        "taskipy"
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
