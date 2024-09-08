@@ -34,6 +34,8 @@ coverage = 'coverage html'
 pre_test = 'task lint'
 test = 'pytest --cov=projeto_final_poo -vv'
 post_test = 'task coverage'
+pre_test_only = 'task lint'
+test_only = 'pytest -vv'
 
 [tool.ruff]
 line-length = 79
