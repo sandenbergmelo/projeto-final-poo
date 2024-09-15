@@ -9,7 +9,8 @@
         "pyenv",
         "pytest",
         "sqlalchemy",
-        "taskipy"
+        "taskipy",
+        "uselist"
     ],
     "python.testing.pytestArgs": [
         "tests"

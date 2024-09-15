@@ -8,7 +8,12 @@ from sqlalchemy.orm import Session
 
 from projeto_final_poo.app import app
 from projeto_final_poo.db.connection import get_session
-from projeto_final_poo.db.models import Client, Service, table_registry
+from projeto_final_poo.db.models import (
+    Address,
+    Client,
+    Service,
+    table_registry,
+)
 
 
 class ClientFactory(factory.Factory):
@@ -17,6 +22,17 @@ class ClientFactory(factory.Factory):
 
     name = factory.Sequence(lambda n: f'test{n}')
     phone_number = factory.Faker('phone_number', locale='pt_BR')
+
+
+class AddressFactory(factory.Factory):
+    class Meta:
+        model = Address
+
+    street = factory.Faker('street_address')
+    neighborhood = factory.Faker('street_name')
+    reference = factory.Faker('secondary_address')
+    number = factory.Faker('building_number')
+    client_id = 1
 
 
 class ServiceFactory(factory.Factory):
@@ -28,15 +44,6 @@ class ServiceFactory(factory.Factory):
     price = factory.LazyAttribute(
         lambda _: round(random.uniform(10.00, 500.00), 2)
     )
-
-
-# @pytest.fixture(scope='session')
-# def engine():
-#     _engine = create_engine(
-#         'sqlite:///:memory:',
-#         connect_args={'check_same_thread': False},
-#     )
-#     return _engine
 
 
 @pytest.fixture
@@ -57,11 +64,8 @@ def session():
 
 @pytest.fixture
 def test_client(session):
-    def get_session_override():
-        return session
-
     with TestClient(app) as client:
-        app.dependency_overrides[get_session] = get_session_override
+        app.dependency_overrides[get_session] = lambda: session
         yield client
 
     app.dependency_overrides.clear()
@@ -70,8 +74,11 @@ def test_client(session):
 @pytest.fixture
 def client(session: Session):
     client = ClientFactory()
+    address = AddressFactory()
+    client.address = address
 
     session.add(client)
+    session.add(address)
     session.commit()
     session.refresh(client)
 
@@ -81,8 +88,11 @@ def client(session: Session):
 @pytest.fixture
 def other_client(session: Session):
     client = ClientFactory()
+    address = AddressFactory()
+    client.address = address
 
     session.add(client)
+    session.add(address)
     session.commit()
     session.refresh(client)
 
