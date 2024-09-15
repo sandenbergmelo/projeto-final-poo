@@ -8,7 +8,14 @@ from projeto_final_poo.schemas.schemas import ClientPublic
 def test_create_client(test_client: TestClient):
     response = test_client.post(
         '/clients',
-        json={'name': 'John Doe', 'phone_number': '+5588999999999'},
+        json={
+            'name': 'John Doe',
+            'phone_number': '+5588999999999',
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
     )
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -16,6 +23,12 @@ def test_create_client(test_client: TestClient):
         'id': 1,
         'name': 'John Doe',
         'phone_number': '+5588999999999',
+        'address': {
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
     }
 
 
@@ -27,6 +40,10 @@ def test_create_user_phone_number_already_exists(
         json={
             'name': 'John Doe again',
             'phone_number': client.phone_number,
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
         },
     )
 
@@ -73,21 +90,62 @@ def test_get_not_found_client_by_id(test_client: TestClient, client):
 def test_update_client(test_client: TestClient, client):
     response = test_client.put(
         f'/clients/{client.id}',
-        json={'name': 'Hello', 'phone_number': '+5588777777777'},
+        json={
+            'name': 'John Doe',
+            'phone_number': '+5588999999999',
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
     )
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         'id': 1,
-        'name': 'Hello',
-        'phone_number': '+5588777777777',
+        'name': 'John Doe',
+        'phone_number': '+5588999999999',
+        'address': {
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
+    }
+
+
+def test_update_client_with_same_phone_number(
+    test_client: TestClient, client, other_client
+):
+    response = test_client.put(
+        f'/clients/{client.id}',
+        json={
+            'name': 'John Doe',
+            'phone_number': other_client.phone_number,
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {
+        'detail': 'Phone number already exists in another client'
     }
 
 
 def test_update_not_found_client(test_client: TestClient, client):
     response = test_client.put(
         f'/clients/{client.id + 1}',
-        json={'name': 'Hello', 'phone_number': '+5588777777777'},
+        json={
+            'name': 'John Doe',
+            'phone_number': '+5588999999999',
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Flat 102',
+            'number': '456',
+        },
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
