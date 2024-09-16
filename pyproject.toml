@@ -31,6 +31,8 @@ migrate_generate = 'alembic revision --autogenerate -m'
 migrate = 'task migrate_generate'
 post_migrate = 'task migrate_upgrade'
 
+seed = 'python projeto_final_poo/db/seed.py'
+
 coverage = 'coverage html'
 pre_test = 'task lint'
 test = 'pytest --cov=projeto_final_poo -vv'

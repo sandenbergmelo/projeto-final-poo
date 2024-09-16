@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "autoflush",
         "DBAPI",
         "onupdate",
         "pipx",
@@ -8,6 +9,7 @@
         "pydantic",
         "pyenv",
         "pytest",
+        "sessionmaker",
         "sqlalchemy",
         "taskipy",
         "uselist"
