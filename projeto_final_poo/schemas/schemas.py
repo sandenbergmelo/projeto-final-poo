@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 from projeto_final_poo.db.models import ShiftEnum
 
@@ -56,17 +56,21 @@ class ServicePublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ServiceList(BaseModel):
+    services: list[ServicePublic]
+
+
 class ScheduleClient(BaseModel):
     id: int
     name: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScheduleService(BaseModel):
     type: str
 
-
-class ServiceList(BaseModel):
-    services: list[ServicePublic]
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScheduleCreate(BaseModel):
@@ -78,6 +82,8 @@ class ScheduleCreate(BaseModel):
     )
     description: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SchedulePublic(BaseModel):
     id: int
@@ -86,6 +92,8 @@ class SchedulePublic(BaseModel):
     description: str
     client: ScheduleClient
     service: ScheduleService
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ScheduleList(BaseModel):
@@ -113,15 +121,3 @@ class ScheduleQueryParams(BaseModel):
     limit: Optional[int] = Field(
         None, description='Number of items to return.'
     )
-
-    @model_validator(mode='before')
-    def check_date_range(cls, values):
-        start_date = values.get('start_date')
-        end_date = values.get('end_date')
-
-        if start_date and end_date and end_date < start_date:
-            raise ValueError(
-                'End date must be greater than or equal to start date.'
-            )
-
-        return values

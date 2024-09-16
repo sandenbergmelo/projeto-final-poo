@@ -60,17 +60,27 @@ def get_filtered_schedules(
 ):
     query = select(Schedule)
 
-    if params.client_id:
-        query = query.filter(Schedule.client_id == params.client_id)
-
-    if params.service_id:
-        query = query.filter(Schedule.service_id == params.service_id)
-
     if params.start_date:
         query = query.filter(Schedule.date >= params.start_date)
 
     if params.end_date:
         query = query.filter(Schedule.date <= params.end_date)
+
+    if (
+        params.end_date
+        and params.end_date
+        and params.start_date > params.end_date
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='start_date must be <= than end_date',
+        )
+
+    if params.client_id:
+        query = query.filter(Schedule.client_id == params.client_id)
+
+    if params.service_id:
+        query = query.filter(Schedule.service_id == params.service_id)
 
     if params.shift:
         query = query.filter(Schedule.shift == params.shift)

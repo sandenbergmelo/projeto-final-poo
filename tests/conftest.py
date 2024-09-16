@@ -11,6 +11,7 @@ from projeto_final_poo.db.connection import get_session
 from projeto_final_poo.db.models import (
     Address,
     Client,
+    Schedule,
     Service,
     table_registry,
 )
@@ -44,6 +45,19 @@ class ServiceFactory(factory.Factory):
     price = factory.LazyAttribute(
         lambda _: round(random.uniform(10.00, 500.00), 2)
     )
+
+
+class ScheduleFactory(factory.Factory):
+    class Meta:
+        model = Schedule
+
+    date = factory.Faker('date_this_year')
+    shift = factory.Faker(
+        'random_element', elements=['morning', 'afternoon', 'evening']
+    )
+    description = factory.Faker('sentence', nb_words=6)
+    client_id = 1
+    service_id = 1
 
 
 @pytest.fixture
@@ -119,3 +133,35 @@ def other_service(session: Session):
     session.refresh(service)
 
     return service
+
+
+@pytest.fixture
+def schedule(session: Session):
+    schedule = ScheduleFactory()
+    client = ClientFactory()
+    service = ServiceFactory()
+
+    schedule.client = client
+    schedule.service = service
+
+    session.add(schedule)
+    session.commit()
+    session.refresh(schedule)
+
+    return schedule
+
+
+@pytest.fixture
+def other_schedule(session: Session):
+    schedule = ScheduleFactory()
+    client = ClientFactory()
+    service = ServiceFactory()
+
+    schedule.client = client
+    schedule.service = service
+
+    session.add(schedule)
+    session.commit()
+    session.refresh(schedule)
+
+    return schedule
