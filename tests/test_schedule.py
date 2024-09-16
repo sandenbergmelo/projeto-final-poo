@@ -2,8 +2,11 @@ import json
 
 from fastapi import status
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
+from projeto_final_poo.db.models import ShiftEnum
 from projeto_final_poo.schemas.schemas import SchedulePublic
+from tests.conftest import ScheduleFactory
 
 
 def test_create_schedule(test_client: TestClient, client, service):
@@ -207,3 +210,67 @@ def test_get_filtered_schedule_with_invalid_date(test_client: TestClient):
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.json() == {'detail': 'start_date must be <= than end_date'}
+
+
+def test_get_filtered_schedule_client_service_id(
+    test_client: TestClient,
+    session: Session,
+    client,
+    service,
+):
+    expected_schedules = 5
+
+    session.bulk_save_objects(
+        ScheduleFactory.create_batch(
+            5,
+            client_id=client.id,
+            service_id=service.id,
+        )
+    )
+
+    session.bulk_save_objects(
+        ScheduleFactory.create_batch(3, client_id=999, service_id=999)
+    )
+
+    session.commit()
+
+    response = test_client.get(
+        '/schedules/filter',
+        params={'client_id': client.id, 'service_id': service.id},
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()['schedules']) == expected_schedules
+
+
+def test_get_filtered_schedule_shift(
+    test_client: TestClient,
+    session: Session,
+    client,
+    service,
+):
+    expected_schedules = 5
+    schedule_shift = ShiftEnum.AFTERNOON
+
+    session.bulk_save_objects(
+        ScheduleFactory.create_batch(
+            5, client_id=client.id, service_id=service.id, shift=schedule_shift
+        )
+    )
+    session.bulk_save_objects(
+        ScheduleFactory.create_batch(
+            5,
+            client_id=client.id,
+            service_id=service.id,
+            shift=ShiftEnum.EVENING,
+        )
+    )
+    session.commit()
+
+    response = test_client.get(
+        '/schedules/filter',
+        params={'shift': schedule_shift.value},
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()['schedules']) == expected_schedules
