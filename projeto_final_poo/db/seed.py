@@ -93,7 +93,7 @@ def seed_data():
     addresses = [
         Address(
             street=f'{i * 100} Elm St',
-            neighborhood='Neighborhood {i%3}',
+            neighborhood=f'Neighborhood {i % 3}',
             reference=f'Reference {i}',
             number=f'{i * 10}',
             client_id=i,
