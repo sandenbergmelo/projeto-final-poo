@@ -12,7 +12,9 @@ from projeto_final_poo.schemas.schemas import (
 router = APIRouter(prefix='/address', tags=['address'])
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
+@router.post(
+    '/', status_code=status.HTTP_201_CREATED, response_model=AddressPublic
+)
 def add_address(address: AddressSchema, session: T_Session):
     db_client = session.get(Client, address.client_id)
 
