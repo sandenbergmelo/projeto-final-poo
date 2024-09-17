@@ -23,12 +23,15 @@ def test_create_client(test_client: TestClient):
         'id': 1,
         'name': 'John Doe',
         'phone_number': '+5588999999999',
-        'address': {
-            'street': 'Flower Street',
-            'neighborhood': 'Central District',
-            'reference': 'Flat 102',
-            'number': '456',
-        },
+        'addresses': [
+            {
+                'id': 1,
+                'street': 'Flower Street',
+                'neighborhood': 'Central District',
+                'reference': 'Flat 102',
+                'number': '456',
+            }
+        ],
     }
 
 
@@ -93,10 +96,6 @@ def test_update_client(test_client: TestClient, client):
         json={
             'name': 'John Doe',
             'phone_number': '+5588999999999',
-            'street': 'Flower Street',
-            'neighborhood': 'Central District',
-            'reference': 'Flat 102',
-            'number': '456',
         },
     )
 
@@ -105,12 +104,15 @@ def test_update_client(test_client: TestClient, client):
         'id': 1,
         'name': 'John Doe',
         'phone_number': '+5588999999999',
-        'address': {
-            'street': 'Flower Street',
-            'neighborhood': 'Central District',
-            'reference': 'Flat 102',
-            'number': '456',
-        },
+        'addresses': [
+            {
+                'id': client.addresses[0].id,
+                'street': client.addresses[0].street,
+                'neighborhood': client.addresses[0].neighborhood,
+                'reference': client.addresses[0].reference,
+                'number': client.addresses[0].number,
+            }
+        ],
     }
 
 
@@ -122,10 +124,6 @@ def test_update_client_with_same_phone_number(
         json={
             'name': 'John Doe',
             'phone_number': other_client.phone_number,
-            'street': 'Flower Street',
-            'neighborhood': 'Central District',
-            'reference': 'Flat 102',
-            'number': '456',
         },
     )
 
@@ -156,7 +154,9 @@ def test_delete_client(test_client: TestClient, client):
     response = test_client.delete(f'/clients/{client.id}')
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {'message': 'Client deleted'}
+    assert response.json() == {
+        'message': 'Client and associated addresses deleted'
+    }
 
 
 def test_delete_not_found_client(test_client: TestClient, client):

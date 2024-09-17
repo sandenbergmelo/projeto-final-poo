@@ -7,6 +7,7 @@ from projeto_final_poo.schemas.schemas import (
     ClientList,
     ClientPublic,
     ClientSchema,
+    ClientUpdate,
     Message,
 )
 
@@ -37,7 +38,7 @@ def create_client(client: ClientSchema, session: T_Session):
         client_id=db_client.id,
     )
 
-    db_client.address = db_address
+    db_client.addresses.append(db_address)
 
     session.add(db_client)
     session.add(db_address)
@@ -67,7 +68,7 @@ def get_client_by_id(id: int, session: T_Session):
 
 
 @router.put('/{id}', response_model=ClientPublic)
-def update_client(id: int, client: ClientSchema, session: T_Session):
+def update_client(id: int, client: ClientUpdate, session: T_Session):
     db_client = session.get(Client, id)
 
     if not db_client:
@@ -88,14 +89,10 @@ def update_client(id: int, client: ClientSchema, session: T_Session):
             detail='Phone number already exists in another client',
         )
 
+    db_client.name = client.name
+
     if not db_client.phone_number == client.phone_number:
         db_client.phone_number = client.phone_number
-
-    db_client.name = client.name
-    db_client.address.street = client.street
-    db_client.address.neighborhood = client.neighborhood
-    db_client.address.reference = client.reference
-    db_client.address.number = client.number
 
     session.commit()
     session.refresh(db_client)
@@ -112,8 +109,10 @@ def delete_client(id: int, session: T_Session):
             status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
         )
 
-    session.delete(db_client.address)
+    for address in db_client.addresses:
+        session.delete(address)
+
     session.delete(db_client)
     session.commit()
 
-    return {'message': 'Client deleted'}
+    return {'message': 'Client and associated addresses deleted'}

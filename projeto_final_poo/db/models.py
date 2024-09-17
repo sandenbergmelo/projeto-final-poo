@@ -30,9 +30,9 @@ class Client:
         onupdate=func.now(),
     )
 
-    address: Mapped['Address'] = relationship(
+    addresses: Mapped[list['Address']] = relationship(
         'Address',
-        uselist=False,
+        uselist=True,
         init=False,
     )
 
