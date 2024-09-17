@@ -11,12 +11,47 @@ class Message(BaseModel):
 
 
 class AddressSchema(BaseModel):
+    client_id: int = Field(ge=1, description='Client ID must be at least 1')
     street: str
     neighborhood: str
     reference: str
     number: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AddressUpdate(BaseModel):
+    street: str
+    neighborhood: str
+    reference: str
+    number: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AddressInClient(BaseModel):
+    id: int
+    street: str
+    neighborhood: str
+    reference: str
+    number: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AddressPublic(BaseModel):
+    id: int
+    client_id: int
+    street: str
+    neighborhood: str
+    reference: str
+    number: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AddressesList(BaseModel):
+    addresses: list[AddressInClient]
 
 
 class ClientSchema(BaseModel):
@@ -28,11 +63,16 @@ class ClientSchema(BaseModel):
     number: str
 
 
+class ClientUpdate(BaseModel):
+    name: str
+    phone_number: str
+
+
 class ClientPublic(BaseModel):
     id: int
     name: str
     phone_number: str
-    address: AddressSchema
+    addresses: list[AddressInClient]
 
     model_config = ConfigDict(from_attributes=True)
 
