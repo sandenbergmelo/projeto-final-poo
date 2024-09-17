@@ -50,7 +50,10 @@ def create_schedule(schedule: ScheduleCreate, session: T_Session):
 
 @router.get('/', response_model=ScheduleList)
 def get_all_schedules(session: T_Session, limit: int = 10, offset: int = 0):
-    schedules = session.scalars(select(Schedule).limit(limit).offset(offset))
+    schedules = session.scalars(
+        select(Schedule).limit(limit).offset(offset)
+    ).all()
+
     return {'schedules': schedules}
 
 
