@@ -85,6 +85,14 @@ def delete_address(id: int, session: T_Session):
             detail='Address not found',
         )
 
+    db_client = session.get(Client, db_address.client_id)
+
+    if db_address and len(db_client.addresses) <= 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="It is not possible to delete the client's only address.",
+        )
+
     session.delete(db_address)
     session.commit()
 
