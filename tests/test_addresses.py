@@ -105,6 +105,17 @@ def test_update_non_existing_address(test_client: TestClient):
 
 
 def test_delete_address(test_client: TestClient, client: Client):
+    test_client.post(
+        '/address/',
+        json={
+            'client_id': client.id,
+            'street': 'Flower Street',
+            'neighborhood': 'Central District',
+            'reference': 'Near the Park',
+            'number': '123',
+        },
+    )
+
     response = test_client.delete(f'/address/{client.addresses[0].id}')
 
     assert response.status_code == status.HTTP_200_OK
@@ -116,3 +127,12 @@ def test_delete_non_existing_address(test_client: TestClient):
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {'detail': 'Address not found'}
+
+
+def test_delete_clients_only_address(test_client: TestClient, client: Client):
+    response = test_client.delete(f'/address/{client.addresses[0].id}')
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {
+        'detail': "It is not possible to delete the client's only address."
+    }
