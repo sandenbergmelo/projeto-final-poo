@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 from sqlalchemy import select
 
 from projeto_final_poo.custom_types.annotated_types import T_Session
 from projeto_final_poo.db.models import Service
+from projeto_final_poo.helpers.exceptions import NotFoundException
 from projeto_final_poo.schemas.schemas import (
     Message,
     ServiceList,
@@ -42,9 +43,7 @@ def get_service_by_id(id: int, session: T_Session):
     service = session.get(Service, id)
 
     if not service:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
-        )
+        raise NotFoundException('Service not found')
 
     return service
 
@@ -54,9 +53,7 @@ def update_service(id: int, service: ServiceSchema, session: T_Session):
     db_service = session.get(Service, id)
 
     if not db_service:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
-        )
+        raise NotFoundException('Service not found')
 
     db_service.type = service.type
     db_service.description = service.description
@@ -73,9 +70,7 @@ def delete_service(id: int, session: T_Session):
     db_service = session.get(Service, id)
 
     if not db_service:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
-        )
+        raise NotFoundException('Service not found')
 
     session.delete(db_service)
     session.commit()

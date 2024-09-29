@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 
 from projeto_final_poo.custom_types.annotated_types import T_Session
 from projeto_final_poo.db.models import Client, Schedule, Service
+from projeto_final_poo.helpers.exceptions import (
+    BadRequestException,
+    NotFoundException,
+)
 from projeto_final_poo.schemas.schemas import (
     Message,
     ScheduleCreate,
@@ -20,15 +24,11 @@ router = APIRouter(prefix='/schedules', tags=['schedules'])
 def create_schedule(schedule: ScheduleCreate, session: T_Session):
     db_client = session.get(Client, schedule.client_id)
     if not db_client:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
-        )
+        raise NotFoundException('Client not found')
 
     db_service = session.get(Service, schedule.service_id)
     if not db_service:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
-        )
+        raise NotFoundException('Service not found')
 
     db_schedule = Schedule(
         client_id=schedule.client_id,
@@ -74,10 +74,7 @@ def get_filtered_schedules(
         and params.end_date
         and params.start_date > params.end_date
     ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail='start_date must be <= than end_date',
-        )
+        raise BadRequestException('start_date must be <= than end_date')
 
     if params.client_id:
         query = query.filter(Schedule.client_id == params.client_id)
@@ -100,9 +97,7 @@ def get_schedule_by_id(id: int, session: T_Session):
     schedule = session.get(Schedule, id)
 
     if not schedule:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Schedule not found'
-        )
+        raise NotFoundException('Schedule not found')
 
     return schedule
 
@@ -112,21 +107,15 @@ def update_schedule(id: int, schedule: ScheduleCreate, session: T_Session):
     db_schedule = session.get(Schedule, id)
 
     if not db_schedule:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Schedule not found'
-        )
+        raise NotFoundException('Schedule not found')
 
     db_client = session.get(Client, schedule.client_id)
     if not db_client:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Client not found'
-        )
+        raise NotFoundException('Client not found')
 
     db_service = session.get(Service, schedule.service_id)
     if not db_service:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Service not found'
-        )
+        raise NotFoundException('Service not found')
 
     db_schedule.client_id = schedule.client_id
     db_schedule.service_id = schedule.service_id
@@ -145,9 +134,7 @@ def delete_schedule(id: int, session: T_Session):
     db_schedule = session.get(Schedule, id)
 
     if not db_schedule:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Schedule not found'
-        )
+        raise NotFoundException('Schedule not found')
 
     session.delete(db_schedule)
     session.commit()
