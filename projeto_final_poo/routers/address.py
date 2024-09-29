@@ -1,7 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 
 from projeto_final_poo.custom_types.annotated_types import T_Session
 from projeto_final_poo.db.models import Address, Client
+from projeto_final_poo.helpers.exceptions import (
+    BadRequestException,
+    NotFoundException,
+)
 from projeto_final_poo.schemas.schemas import (
     AddressesList,
     AddressPublic,
@@ -19,10 +23,7 @@ def add_address(address: AddressSchema, session: T_Session):
     db_client = session.get(Client, address.client_id)
 
     if not db_client:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Client not found',
-        )
+        raise NotFoundException('Client not found')
 
     db_address = Address(
         client_id=address.client_id,
@@ -46,10 +47,7 @@ def get_addresses_by_client(client_id: int, session: T_Session):
     db_client = session.get(Client, client_id)
 
     if not db_client:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Client not found',
-        )
+        raise NotFoundException('Client not found')
 
     return {'addresses': db_client.addresses}
 
@@ -59,10 +57,7 @@ def update_address(id: int, address: AddressUpdate, session: T_Session):
     db_address = session.get(Address, id)
 
     if not db_address:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Address not found',
-        )
+        raise NotFoundException('Address not found')
 
     db_address.street = address.street
     db_address.neighborhood = address.neighborhood
@@ -80,17 +75,13 @@ def delete_address(id: int, session: T_Session):
     db_address = session.get(Address, id)
 
     if not db_address:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Address not found',
-        )
+        raise NotFoundException('Address not found')
 
     db_client = session.get(Client, db_address.client_id)
 
     if db_address and len(db_client.addresses) <= 1:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="It is not possible to delete the client's only address.",
+        raise BadRequestException(
+            "It is not possible to delete the client's only address."
         )
 
     session.delete(db_address)
