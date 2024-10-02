@@ -70,7 +70,7 @@ def get_filtered_schedules(
         query = query.filter(Schedule.date <= params.end_date)
 
     if (
-        params.end_date
+        params.start_date
         and params.end_date
         and params.start_date > params.end_date
     ):
