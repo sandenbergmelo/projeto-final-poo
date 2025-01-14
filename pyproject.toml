@@ -1,27 +1,28 @@
-[tool.poetry]
+[project]
 name = "projeto-final-poo"
 version = "0.1.0"
-description = ""
-authors = []
+description = "Add your description here"
 readme = "README.md"
+authors = [{ name = "Sandenberg Ferreira Melo" }]
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14.0",
+    "fastapi[standard]>=0.115.6",
+    "pydantic-settings>=2.7.1",
+    "sqlalchemy>=2.0.37",
+]
 
-[tool.poetry.dependencies]
-python = "3.12.*"
-fastapi = { extras = ["standard"], version = "^0.114.0" }
-sqlalchemy = "^2.0.34"
-alembic = "^1.13.2"
-pydantic-settings = "^2.4.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.6.4"
-taskipy = "^1.13.0"
-pytest = "^8.3.2"
-pytest-cov = "^5.0.0"
-ipython = "^8.27.0"
-factory-boy = "^3.3.1"
+[dependency-groups]
+dev = [
+    "factory-boy>=3.3.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.1",
+    "taskipy>=1.14.1",
+]
 
 [tool.taskipy.tasks]
-dev = 'fastapi dev projeto_final_poo/app.py'
+dev = 'fastapi dev src/projeto_final_poo/app.py'
 
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
@@ -32,6 +33,7 @@ migrate = 'task migrate_generate'
 post_migrate = 'task migrate_upgrade'
 
 seed = 'python projeto_final_poo/db/seed.py'
+clean = 'rm -rf .pytest_cache .coverage htmlcov'
 
 coverage = 'coverage html'
 pre_test = 'task lint'
@@ -53,5 +55,5 @@ preview = true
 quote-style = 'single'
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
