@@ -9,7 +9,7 @@ class ClientFactory(factory.Factory):
     class Meta:
         model = Client
 
-    name = factory.Sequence(lambda n: f'test{n}')
+    name = factory.Sequence(lambda n: f'Client {n}')
     phone_number = factory.Faker('phone_number', locale='pt_BR')
 
 
