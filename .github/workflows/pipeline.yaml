@@ -17,11 +17,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-suffix: 'uv-cache'
 
-      - name: Install dependencies
-        run: poetry install
+      - name: Instalar dependências
+        run: uv sync
 
-      - name: Execute tests
-        run: poetry run task test_only
+      - name: Executar testes
+        run: uv run task test_only
