@@ -2,34 +2,30 @@
 O projeto está sendo/foi feito para facilitar o agendamento de serviços, concentrando-se inicialmente em manutenção e instalação de ar-condicionado
 
 ## Como rodar o projeto:
-Este projeto usa a versão `3.12.*` do Python. Você pode instalar a versão correta com o [pyenv](https://github.com/pyenv/pyenv):
+Este projeto usa a versão `3.12.*` do Python. Você pode instalar a versão correta com o [UV](https://docs.astral.sh/uv/):
 ```bash
-pyenv install 3.12
-pyenv local 3.12
+uv python install 3.12
+uv python pin 3.12
 ```
 
-O projeto usa o [Poetry](https://python-poetry.org/) para gerenciar as dependências. Para instalar as dependências, execute:
+O projeto usa o [UV](https://docs.astral.sh/uv/) para gerenciar as dependências. Para instalar as dependências, execute:
 ```bash
-poetry install
-```
-
-Para rodar os comando do projeto, você precisa ativar o ambiente virtual do Poetry com o comando:
-```bash
-poetry shell
+uv sync
 ```
 
 ### Sobre os comandos:
 Os comandos para executar funções do projeto são feitos com o [taskipy](https://github.com/taskipy/taskipy):
 ```bash
-task --list            # Lista os comandos disponíveis
-task migrate_generate  # Gera arquivos de migração do banco de dados
-task migrate_upgrade   # Executa as migrações do banco de dados
-task migrate <message> # Gera e executa uma migração do banco de dados
-task dev               # Roda o servidor de desenvolvimento
-task test              # Roda os testes
-task lint              # Roda o linter
-task lint --fix        # Roda o linter e tenta corrigir os problemas
-task format            # Formata o código
+uv run task --list            # Lista os comandos disponíveis
+uv run task migrate_generate  # Gera arquivos de migração do banco de dados
+uv run task migrate_upgrade   # Executa as migrações do banco de dados
+uv run task migrate <message> # Gera e executa uma migração do banco de dados
+uv run task dev               # Roda o servidor de desenvolvimento
+uv run task test              # Roda os testes
+uv run task clean             # Limpa os arquivos temporários
+uv run task lint              # Roda o linter
+uv run task lint --fix        # Roda o linter e tenta corrigir os problemas
+uv run task format            # Formata o código
 ```
 
 ### Setup para rodar o projeto:
@@ -42,6 +38,6 @@ DATABASE_URL=sqlite:///database.db
 
 #### Para rodar o projeto:
 ```bash
-task migrate_upgrade                   # Executa as migrações do banco de dados
-task dev                               # Roda o servidor de desenvolvimento
+uv run task migrate_upgrade # Executa as migrações do banco de dados
+uv run task dev             # Roda o servidor de desenvolvimento
 ```
