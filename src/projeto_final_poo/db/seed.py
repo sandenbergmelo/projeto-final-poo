@@ -10,6 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from projeto_final_poo.helpers.factories import (
+    AddressFactory,
     ClientFactory,
     ScheduleFactory,
     ServiceFactory,
@@ -58,7 +59,7 @@ def seed_data():
     session.add_all(clients)
     session.commit()
 
-    addresses = ClientFactory.create_batch(10)
+    addresses = AddressFactory.create_batch(10)
     session.add_all(addresses)
     session.commit()
 
