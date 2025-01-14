@@ -1,8 +1,11 @@
 import random
 from datetime import datetime, timedelta
-from os import system
 from pathlib import Path
 
+import alembic
+import alembic.command
+from alembic.config import Config
+from rich import print
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -15,6 +18,10 @@ from projeto_final_poo.db.models import (
 from projeto_final_poo.helpers.settings import env
 from projeto_final_poo.schemas.schemas import ShiftEnum
 
+alembic_config = Config(
+    Path(__file__).parent.parent.parent.parent / 'alembic.ini'
+)
+
 engine = create_engine(env.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 session = SessionLocal()
@@ -23,12 +30,15 @@ session = SessionLocal()
 def reset_db():
     db_file = Path(__file__).absolute().parent.parent.parent / 'database.db'
 
-    if db_file.is_file():
-        db_file.unlink()
-
     try:
-        system('alembic upgrade head')
-        print('Database cleaned')
+        print('[bold yellow]Cleaning database...[/]')
+        if db_file.is_file():
+            db_file.unlink()
+
+        alembic.command.downgrade(alembic_config, 'base')
+        alembic.command.upgrade(alembic_config, 'head')
+        print('[bold green]Database cleaned![/]')
+
     except Exception as e:
         print(e)
 
@@ -40,7 +50,8 @@ def random_date(start_date, end_date):
 
 
 def seed_data():
-    reset_db()
+    print('\n[bold yellow]Seeding database...[/]')
+
     services = [
         Service(type='Cleaning', description='Office cleaning', price=50.00),
         Service(
@@ -125,8 +136,9 @@ def seed_data():
     session.add_all(schedules)
     session.commit()
 
-    print('Database seeded successfully!')
+    print('[bold green]Database seeded![/]')
 
 
 if __name__ == '__main__':
+    reset_db()
     seed_data()

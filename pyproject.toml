@@ -9,6 +9,7 @@ dependencies = [
     "alembic>=1.14.0",
     "fastapi[standard]>=0.115.6",
     "pydantic-settings>=2.7.1",
+    "rich>=13.9.4",
     "sqlalchemy>=2.0.37",
 ]
 
@@ -23,6 +24,7 @@ dev = [
 
 [tool.taskipy.tasks]
 dev = 'fastapi dev src/projeto_final_poo/app.py'
+start = 'fastapi run src/projeto_final_poo/app.py'
 
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
@@ -32,7 +34,7 @@ migrate_generate = 'alembic revision --autogenerate -m'
 migrate = 'task migrate_generate'
 post_migrate = 'task migrate_upgrade'
 
-seed = 'python projeto_final_poo/db/seed.py'
+seed = 'uv run src/projeto_final_poo/db/seed.py'
 clean = 'rm -rf .pytest_cache .coverage htmlcov'
 
 coverage = 'coverage html'

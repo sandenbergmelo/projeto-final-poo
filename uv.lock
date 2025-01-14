@@ -424,6 +424,7 @@ dependencies = [
     { name = "alembic" },
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic-settings" },
+    { name = "rich" },
     { name = "sqlalchemy" },
 ]
 
@@ -441,6 +442,7 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.14.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.6" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
+    { name = "rich", specifier = ">=13.9.4" },
     { name = "sqlalchemy", specifier = ">=2.0.37" },
 ]
 
